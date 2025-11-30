@@ -23,6 +23,21 @@ import os
 # 현재 디렉토리를 경로에 추가
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
+# Qt 플러그인 경로 설정 (PyQt5 설치 문제 해결)
+if sys.platform == "win32":
+    try:
+        import PyQt5
+        pyqt_path = os.path.dirname(PyQt5.__file__)
+        plugin_path = os.path.join(pyqt_path, "Qt5", "plugins")
+        if os.path.exists(plugin_path):
+            os.environ["QT_PLUGIN_PATH"] = plugin_path
+        # 대체 경로
+        plugin_path2 = os.path.join(pyqt_path, "Qt", "plugins")
+        if os.path.exists(plugin_path2):
+            os.environ["QT_PLUGIN_PATH"] = plugin_path2
+    except Exception:
+        pass
+
 
 def check_platform():
     """플랫폼 확인"""
