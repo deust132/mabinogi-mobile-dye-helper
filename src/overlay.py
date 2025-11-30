@@ -267,38 +267,29 @@ class OverlayWindow(QWidget):
                 )
 
     def _draw_triangle_guide(self, painter: QPainter):
-        """삼각형 가이드라인 그리기"""
+        """삼각형 가이드라인 그리기 (세로선 3개)"""
         # 삼각형 꼭지점 (절대 좌표)
         points = []
         for px, py in self.triangle_points[:3]:
             points.append(QPoint(px, py))
 
-        # 삼각형 그리기
+        # 수직 가이드라인 그리기 (세로선 3개만)
+        screen_height = QApplication.primaryScreen().geometry().height()
         pen = QPen(QColor(255, 255, 0), 2, Qt.PenStyle.DashLine)
         painter.setPen(pen)
-        painter.setBrush(QBrush(QColor(255, 255, 0, 30)))
 
-        polygon = QPolygon(points)
-        painter.drawPolygon(polygon)
-
-        # 꼭지점 표시
         for i, point in enumerate(points):
-            # 꼭지점 원
-            painter.setPen(QPen(QColor(255, 255, 0), 2))
+            # 세로선
+            painter.drawLine(point.x(), 0, point.x(), screen_height)
+
+            # 꼭지점 원 (기준점 표시)
             painter.setBrush(QBrush(QColor(255, 255, 0, 150)))
             painter.drawEllipse(point, 8, 8)
 
             # 번호 표시
             painter.setPen(QPen(QColor(0, 0, 0)))
             painter.drawText(point.x() - 4, point.y() + 4, str(i + 4))
-
-        # 수직 가이드라인 그리기
-        screen_height = QApplication.primaryScreen().geometry().height()
-        pen = QPen(QColor(255, 255, 0, 100), 1, Qt.PenStyle.DotLine)
-        painter.setPen(pen)
-
-        for point in points:
-            painter.drawLine(point.x(), 0, point.x(), screen_height)
+            painter.setPen(pen)  # 펜 복원
 
     def resizeEvent(self, event):
         """창 크기 변경 시 전체 화면으로"""
