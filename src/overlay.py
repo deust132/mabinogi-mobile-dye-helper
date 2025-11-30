@@ -212,59 +212,58 @@ class OverlayWindow(QWidget):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
-        # 3색 가이드라인 (삼각형) 그리기 - 절대 좌표라 먼저 그림
-        if self.triangle_enabled and len(self.triangle_points) >= 3:
-            self._draw_triangle_guide(painter)
-
         # 윈도우 정보 가져오기
         win_info = screen_capture.get_window_info()
-        if win_info is None:
-            return
 
-        win_x = win_info["x"]
-        win_y = win_info["y"]
+        if win_info is not None:
+            win_x = win_info["x"]
+            win_y = win_info["y"]
 
-        # 캡처 영역 테두리 (빨간색)
-        border_rect = QRect(
-            win_x + self.capture_region.x(),
-            win_y + self.capture_region.y(),
-            self.capture_region.width(),
-            self.capture_region.height(),
-        )
-
-        # 결과 이미지 그리기
-        if self.result_image is not None and self.show_grayscale:
-            h, w = self.result_image.shape[:2]
-            bytes_per_line = 3 * w
-            q_image = QImage(
-                self.result_image.data,
-                w,
-                h,
-                bytes_per_line,
-                QImage.Format.Format_BGR888,
+            # 캡처 영역 테두리 (빨간색)
+            border_rect = QRect(
+                win_x + self.capture_region.x(),
+                win_y + self.capture_region.y(),
+                self.capture_region.width(),
+                self.capture_region.height(),
             )
-            pixmap = QPixmap.fromImage(q_image)
-            painter.drawPixmap(border_rect.topLeft(), pixmap)
 
-        # 캡처 영역 테두리
-        pen = QPen(QColor(255, 0, 0), 2)
-        painter.setPen(pen)
-        painter.drawRect(border_rect)
-
-        # 검출된 위치 표시 (점멸 효과 적용)
-        if self.blink_visible:
-            for pos_x, pos_y in self.detected_positions:
-                abs_x = win_x + self.capture_region.x() + pos_x
-                abs_y = win_y + self.capture_region.y() + pos_y
-
-                # 원형 표시
-                painter.setPen(QPen(QColor(0, 255, 0), 2))
-                painter.setBrush(QBrush(QColor(0, 255, 0, 100)))
-                painter.drawEllipse(
-                    QPoint(abs_x, abs_y),
-                    self.indicator_size,
-                    self.indicator_size,
+            # 결과 이미지 그리기
+            if self.result_image is not None and self.show_grayscale:
+                h, w = self.result_image.shape[:2]
+                bytes_per_line = 3 * w
+                q_image = QImage(
+                    self.result_image.data,
+                    w,
+                    h,
+                    bytes_per_line,
+                    QImage.Format.Format_BGR888,
                 )
+                pixmap = QPixmap.fromImage(q_image)
+                painter.drawPixmap(border_rect.topLeft(), pixmap)
+
+            # 캡처 영역 테두리
+            pen = QPen(QColor(255, 0, 0), 2)
+            painter.setPen(pen)
+            painter.drawRect(border_rect)
+
+            # 검출된 위치 표시 (점멸 효과 적용)
+            if self.blink_visible:
+                for pos_x, pos_y in self.detected_positions:
+                    abs_x = win_x + self.capture_region.x() + pos_x
+                    abs_y = win_y + self.capture_region.y() + pos_y
+
+                    # 원형 표시
+                    painter.setPen(QPen(QColor(0, 255, 0), 2))
+                    painter.setBrush(QBrush(QColor(0, 255, 0, 100)))
+                    painter.drawEllipse(
+                        QPoint(abs_x, abs_y),
+                        self.indicator_size,
+                        self.indicator_size,
+                    )
+
+        # 3색 가이드라인 (삼각형) - 맨 마지막에 그려서 항상 보이게
+        if self.triangle_enabled and len(self.triangle_points) >= 3:
+            self._draw_triangle_guide(painter)
 
     def _draw_triangle_guide(self, painter: QPainter):
         """삼각형 가이드라인 그리기 (세로선 3개)"""
