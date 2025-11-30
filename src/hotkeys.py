@@ -67,12 +67,32 @@ class HotkeyManager(QObject):
             on_release=self._on_key_release,
         )
         self.listener.start()
+        print("[단축키] 리스너 시작됨")
 
     def stop(self):
         """단축키 리스닝 중지"""
         if self.listener is not None:
             self.listener.stop()
             self.listener = None
+            print("[단축키] 리스너 중지됨")
+
+    def _get_key_number(self, key) -> Optional[int]:
+        """키에서 숫자 추출 (1-9)"""
+        # 가상 키코드로 체크 (CTRL 누른 상태에서도 작동)
+        if hasattr(key, 'vk') and key.vk is not None:
+            # 숫자키 1-9의 가상 키코드: 0x31 (49) ~ 0x39 (57)
+            if 0x31 <= key.vk <= 0x39:
+                return key.vk - 0x30  # 1-9 반환
+            # 넘패드 1-9: 0x61 (97) ~ 0x69 (105)
+            if 0x61 <= key.vk <= 0x69:
+                return key.vk - 0x60  # 1-9 반환
+
+        # char로 체크 (백업)
+        if hasattr(key, 'char') and key.char is not None:
+            if key.char in '123456789':
+                return int(key.char)
+
+        return None
 
     def _on_key_press(self, key):
         """키 눌림 처리"""
@@ -88,35 +108,40 @@ class HotkeyManager(QObject):
             or keyboard.Key.alt_r in self.current_keys
         )
 
+        # 숫자키 확인
+        num = self._get_key_number(key)
+
         # CTRL + 숫자키
-        if ctrl_pressed and not alt_pressed:
-            if hasattr(key, "char"):
-                if key.char == "1":
-                    self._save_cursor_position(1)
-                elif key.char == "2":
-                    self._save_cursor_position(2)
-                elif key.char == "3":
-                    self._save_cursor_position(3)
-                elif key.char == "4":
-                    self._save_triangle_position(0)
-                elif key.char == "5":
-                    self._save_triangle_position(1)
-                elif key.char == "6":
-                    self._save_triangle_position(2)
-                elif key.char == "7":
-                    self.reset_triangle.emit()
-                elif key.char == "8":
-                    self.toggle_capture.emit()
+        if ctrl_pressed and not alt_pressed and num is not None:
+            print(f"[단축키] CTRL+{num} 감지됨")
+            if num == 1:
+                self._save_cursor_position(1)
+            elif num == 2:
+                self._save_cursor_position(2)
+            elif num == 3:
+                self._save_cursor_position(3)
+            elif num == 4:
+                self._save_triangle_position(0)
+            elif num == 5:
+                self._save_triangle_position(1)
+            elif num == 6:
+                self._save_triangle_position(2)
+            elif num == 7:
+                self.reset_triangle.emit()
+                print("[단축키] 삼각형 초기화")
+            elif num == 8:
+                self.toggle_capture.emit()
+                print("[단축키] 캡처 토글")
 
         # ALT + 숫자키
-        if alt_pressed and not ctrl_pressed:
-            if hasattr(key, "char"):
-                if key.char == "1":
-                    self._move_to_saved_position(1)
-                elif key.char == "2":
-                    self._move_to_saved_position(2)
-                elif key.char == "3":
-                    self._move_to_saved_position(3)
+        if alt_pressed and not ctrl_pressed and num is not None:
+            print(f"[단축키] ALT+{num} 감지됨")
+            if num == 1:
+                self._move_to_saved_position(1)
+            elif num == 2:
+                self._move_to_saved_position(2)
+            elif num == 3:
+                self._move_to_saved_position(3)
 
         # 화살표 키 (픽셀 단위 이동)
         if ctrl_pressed:
@@ -142,6 +167,7 @@ class HotkeyManager(QObject):
         self.saved_positions[index] = (x, y)
         self._save_positions()
         self.save_position.emit(index)
+        print(f"[단축키] 위치 {index} 저장: ({x}, {y})")
 
     def _move_to_saved_position(self, index: int):
         """저장된 위치로 커서 이동"""
@@ -152,6 +178,7 @@ class HotkeyManager(QObject):
             x, y = self.saved_positions[index]
             win32api.SetCursorPos((x, y))
             self.move_to_position.emit(index)
+            print(f"[단축키] 위치 {index}로 이동: ({x}, {y})")
 
     def _save_triangle_position(self, index: int):
         """삼각형 꼭지점 위치 저장 (현재 커서 위치)"""
@@ -160,6 +187,7 @@ class HotkeyManager(QObject):
 
         x, y = win32api.GetCursorPos()
         self.save_triangle.emit(index, x, y)
+        print(f"[단축키] 삼각형 꼭지점 {index} 저장: ({x}, {y})")
 
     def get_cursor_position(self) -> tuple:
         """현재 커서 위치 반환"""
