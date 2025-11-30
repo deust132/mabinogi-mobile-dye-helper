@@ -212,6 +212,10 @@ class OverlayWindow(QWidget):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
+        # 3색 가이드라인 (삼각형) 그리기 - 절대 좌표라 먼저 그림
+        if self.triangle_enabled and len(self.triangle_points) >= 3:
+            self._draw_triangle_guide(painter)
+
         # 윈도우 정보 가져오기
         win_info = screen_capture.get_window_info()
         if win_info is None:
@@ -261,10 +265,6 @@ class OverlayWindow(QWidget):
                     self.indicator_size,
                     self.indicator_size,
                 )
-
-        # 3색 가이드라인 (삼각형) 그리기
-        if self.triangle_enabled and len(self.triangle_points) >= 3:
-            self._draw_triangle_guide(painter)
 
     def _draw_triangle_guide(self, painter: QPainter):
         """삼각형 가이드라인 그리기"""
