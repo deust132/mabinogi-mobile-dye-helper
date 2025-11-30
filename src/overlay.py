@@ -62,8 +62,18 @@ class OverlayWindow(QWidget):
         self.capture_timer = QTimer()
         self.capture_timer.timeout.connect(self._capture_and_detect)
 
+        # 점멸 효과
+        self.blink_visible = True
+        self.blink_timer = QTimer()
+        self.blink_timer.timeout.connect(self._toggle_blink)
+
         # 설정 불러오기
         self._load_settings()
+
+    def _toggle_blink(self):
+        """점멸 토글"""
+        self.blink_visible = not self.blink_visible
+        self.update()
 
     def _load_settings(self):
         """설정 불러오기"""
@@ -121,12 +131,15 @@ class OverlayWindow(QWidget):
         self.is_running = True
         self.show()
         self.capture_timer.start(33)  # ~30 FPS
+        self.blink_timer.start(500)  # 점멸 효과 0.5초
 
     def stop(self):
         """캡처 중지"""
         self.is_running = False
         self.capture_timer.stop()
+        self.blink_timer.stop()
         self.result_image = None
+        self.detected_positions = []
         self.hide()
         self._save_settings()
 
@@ -234,32 +247,31 @@ class OverlayWindow(QWidget):
         painter.setPen(pen)
         painter.drawRect(border_rect)
 
-        # 검출된 위치 표시
-        for pos_x, pos_y in self.detected_positions:
-            abs_x = win_x + self.capture_region.x() + pos_x
-            abs_y = win_y + self.capture_region.y() + pos_y
+        # 검출된 위치 표시 (점멸 효과 적용)
+        if self.blink_visible:
+            for pos_x, pos_y in self.detected_positions:
+                abs_x = win_x + self.capture_region.x() + pos_x
+                abs_y = win_y + self.capture_region.y() + pos_y
 
-            # 원형 표시
-            painter.setPen(QPen(QColor(0, 255, 0), 2))
-            painter.setBrush(QBrush(QColor(0, 255, 0, 100)))
-            painter.drawEllipse(
-                QPoint(abs_x, abs_y),
-                self.indicator_size,
-                self.indicator_size,
-            )
+                # 원형 표시
+                painter.setPen(QPen(QColor(0, 255, 0), 2))
+                painter.setBrush(QBrush(QColor(0, 255, 0, 100)))
+                painter.drawEllipse(
+                    QPoint(abs_x, abs_y),
+                    self.indicator_size,
+                    self.indicator_size,
+                )
 
         # 3색 가이드라인 (삼각형) 그리기
         if self.triangle_enabled and len(self.triangle_points) >= 3:
-            self._draw_triangle_guide(painter, win_x, win_y)
+            self._draw_triangle_guide(painter)
 
-    def _draw_triangle_guide(self, painter: QPainter, win_x: int, win_y: int):
+    def _draw_triangle_guide(self, painter: QPainter):
         """삼각형 가이드라인 그리기"""
-        # 삼각형 꼭지점 계산
+        # 삼각형 꼭지점 (절대 좌표)
         points = []
         for px, py in self.triangle_points[:3]:
-            abs_x = win_x + px
-            abs_y = win_y + py
-            points.append(QPoint(abs_x, abs_y))
+            points.append(QPoint(px, py))
 
         # 삼각형 그리기
         pen = QPen(QColor(255, 255, 0), 2, Qt.DashLine)

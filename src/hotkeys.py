@@ -16,7 +16,7 @@ class HotkeyManager(QObject):
     # 시그널 정의
     save_position = pyqtSignal(int)  # CTRL+1,2,3: 위치 저장
     move_to_position = pyqtSignal(int)  # ALT+1,2,3: 위치로 이동
-    save_triangle = pyqtSignal(int)  # CTRL+4,5,6: 삼각형 좌표 저장
+    save_triangle = pyqtSignal(int, int, int)  # CTRL+4,5,6: 삼각형 좌표 저장 (index, x, y)
     reset_triangle = pyqtSignal()  # CTRL+7: 삼각형 초기화
     toggle_capture = pyqtSignal()  # CTRL+8: 캡처 토글
     pixel_move = pyqtSignal(int, int)  # 화살표키: 픽셀 단위 이동
@@ -159,7 +159,7 @@ class HotkeyManager(QObject):
             return
 
         x, y = win32api.GetCursorPos()
-        self.save_triangle.emit(index)
+        self.save_triangle.emit(index, x, y)
 
     def get_cursor_position(self) -> tuple:
         """현재 커서 위치 반환"""

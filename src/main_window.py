@@ -204,9 +204,16 @@ class MainWindow(QMainWindow):
         group = QGroupBox("색상 설정")
         layout = QVBoxLayout(group)
 
-        # 색상 위젯들
+        # 색상 위젯들 - 기본 3개 색상
         colors = config.get("colors", default=[])
-        for i, color_info in enumerate(colors):
+        if not colors or len(colors) < 3:
+            colors = [
+                {"hex": "#FF0000", "tolerance": 30, "enabled": True},
+                {"hex": "#00FF00", "tolerance": 30, "enabled": True},
+                {"hex": "#0000FF", "tolerance": 30, "enabled": True},
+            ]
+
+        for i, color_info in enumerate(colors[:3]):  # 최대 3개
             widget = ColorWidget(i, color_info)
             self.color_widgets.append(widget)
             layout.addWidget(widget)
@@ -478,17 +485,12 @@ class MainWindow(QMainWindow):
         """위치 이동 알림"""
         self.statusBar().showMessage(f"위치 {index}로 이동", 2000)
 
-    def _on_triangle_saved(self, index: int):
+    def _on_triangle_saved(self, index: int, x: int, y: int):
         """삼각형 꼭지점 저장"""
         if self.overlay:
-            x, y = hotkey_manager.get_cursor_position()
-            # 윈도우 좌표 기준으로 변환
-            win_info = screen_capture.get_window_info()
-            if win_info:
-                rel_x = x - win_info["x"]
-                rel_y = y - win_info["y"]
-                self.overlay.set_triangle_point(index, rel_x, rel_y)
-                self.statusBar().showMessage(f"삼각형 꼭지점 {index + 4} 저장됨", 2000)
+            # 화면 절대 좌표로 저장
+            self.overlay.set_triangle_point(index, x, y)
+            self.statusBar().showMessage(f"삼각형 꼭지점 {index + 4} 저장됨 ({x}, {y})", 2000)
 
     def _on_pixel_move(self, dx: int, dy: int):
         """픽셀 단위 커서 이동"""
