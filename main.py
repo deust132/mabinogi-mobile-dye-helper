@@ -23,21 +23,6 @@ import os
 # 현재 디렉토리를 경로에 추가
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-# Qt 플러그인 경로 설정 (PyQt5 설치 문제 해결)
-if sys.platform == "win32":
-    try:
-        import PyQt5
-        pyqt_path = os.path.dirname(PyQt5.__file__)
-        plugin_path = os.path.join(pyqt_path, "Qt5", "plugins")
-        if os.path.exists(plugin_path):
-            os.environ["QT_PLUGIN_PATH"] = plugin_path
-        # 대체 경로
-        plugin_path2 = os.path.join(pyqt_path, "Qt", "plugins")
-        if os.path.exists(plugin_path2):
-            os.environ["QT_PLUGIN_PATH"] = plugin_path2
-    except Exception:
-        pass
-
 
 def check_platform():
     """플랫폼 확인"""
@@ -78,34 +63,29 @@ def main():
     # 관리자 권한 확인 (경고만 표시, 계속 실행)
     check_admin()
 
-    # PyQt5 애플리케이션 시작
-    from PyQt5.QtWidgets import QApplication
-    from PyQt5.QtCore import Qt
-
-    # High DPI 지원
-    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
-    QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
+    # PyQt6 애플리케이션 시작
+    from PyQt6.QtWidgets import QApplication
+    from PyQt6.QtCore import Qt
+    from PyQt6.QtGui import QPalette, QColor
 
     app = QApplication(sys.argv)
     app.setStyle("Fusion")
 
     # 다크 모드 팔레트 설정
-    from PyQt5.QtGui import QPalette, QColor
-
     dark_palette = QPalette()
-    dark_palette.setColor(QPalette.Window, QColor(53, 53, 53))
-    dark_palette.setColor(QPalette.WindowText, Qt.white)
-    dark_palette.setColor(QPalette.Base, QColor(25, 25, 25))
-    dark_palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
-    dark_palette.setColor(QPalette.ToolTipBase, Qt.white)
-    dark_palette.setColor(QPalette.ToolTipText, Qt.white)
-    dark_palette.setColor(QPalette.Text, Qt.white)
-    dark_palette.setColor(QPalette.Button, QColor(53, 53, 53))
-    dark_palette.setColor(QPalette.ButtonText, Qt.white)
-    dark_palette.setColor(QPalette.BrightText, Qt.red)
-    dark_palette.setColor(QPalette.Link, QColor(42, 130, 218))
-    dark_palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
-    dark_palette.setColor(QPalette.HighlightedText, Qt.black)
+    dark_palette.setColor(QPalette.ColorRole.Window, QColor(53, 53, 53))
+    dark_palette.setColor(QPalette.ColorRole.WindowText, QColor(255, 255, 255))
+    dark_palette.setColor(QPalette.ColorRole.Base, QColor(25, 25, 25))
+    dark_palette.setColor(QPalette.ColorRole.AlternateBase, QColor(53, 53, 53))
+    dark_palette.setColor(QPalette.ColorRole.ToolTipBase, QColor(255, 255, 255))
+    dark_palette.setColor(QPalette.ColorRole.ToolTipText, QColor(255, 255, 255))
+    dark_palette.setColor(QPalette.ColorRole.Text, QColor(255, 255, 255))
+    dark_palette.setColor(QPalette.ColorRole.Button, QColor(53, 53, 53))
+    dark_palette.setColor(QPalette.ColorRole.ButtonText, QColor(255, 255, 255))
+    dark_palette.setColor(QPalette.ColorRole.BrightText, QColor(255, 0, 0))
+    dark_palette.setColor(QPalette.ColorRole.Link, QColor(42, 130, 218))
+    dark_palette.setColor(QPalette.ColorRole.Highlight, QColor(42, 130, 218))
+    dark_palette.setColor(QPalette.ColorRole.HighlightedText, QColor(0, 0, 0))
 
     app.setPalette(dark_palette)
     app.setStyleSheet(
@@ -118,7 +98,7 @@ def main():
     window = MainWindow()
     window.show()
 
-    return app.exec_()
+    return app.exec()
 
 
 if __name__ == "__main__":

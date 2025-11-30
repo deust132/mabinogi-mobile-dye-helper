@@ -1,7 +1,7 @@
-"""메인 윈도우 UI 모듈"""
+"""메인 윈도우 UI 모듈 - PyQt6"""
 import sys
 from typing import List
-from PyQt5.QtWidgets import (
+from PyQt6.QtWidgets import (
     QMainWindow,
     QWidget,
     QVBoxLayout,
@@ -18,8 +18,8 @@ from PyQt5.QtWidgets import (
     QMessageBox,
     QApplication,
 )
-from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtGui import QColor, QPalette, QFont, QIcon
+from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtGui import QColor, QPalette, QFont, QIcon
 
 from .overlay import OverlayWindow, RegionSelector
 from .hotkeys import hotkey_manager, HotkeyManager
@@ -35,7 +35,7 @@ class ColorWidget(QFrame):
         self.index = index
         self.color_info = color_info
 
-        self.setFrameStyle(QFrame.StyledPanel | QFrame.Raised)
+        self.setFrameStyle(QFrame.Shape.StyledPanel | QFrame.Shadow.Raised)
         self._setup_ui()
         self._update_color_display()
 
@@ -56,7 +56,7 @@ class ColorWidget(QFrame):
         # 색상 미리보기
         self.color_preview = QFrame()
         self.color_preview.setFixedSize(30, 30)
-        self.color_preview.setFrameStyle(QFrame.Box)
+        self.color_preview.setFrameStyle(QFrame.Shape.Box)
         layout.addWidget(self.color_preview)
 
         # HEX 입력
@@ -73,7 +73,7 @@ class ColorWidget(QFrame):
 
         # 오차 슬라이더
         layout.addWidget(QLabel("오차:"))
-        self.tolerance_slider = QSlider(Qt.Horizontal)
+        self.tolerance_slider = QSlider(Qt.Orientation.Horizontal)
         self.tolerance_slider.setMinimum(0)
         self.tolerance_slider.setMaximum(100)
         self.tolerance_slider.setValue(self.color_info.get("tolerance", 30))
@@ -110,7 +110,7 @@ class ColorWidget(QFrame):
 
     def _on_enabled_changed(self, state: int):
         """활성화 상태 변경"""
-        self.color_info["enabled"] = state == Qt.Checked
+        self.color_info["enabled"] = state == Qt.CheckState.Checked.value
 
     def _pick_color(self):
         """색상 선택 다이얼로그"""
@@ -233,7 +233,7 @@ class MainWindow(QMainWindow):
         # 밝기 조절
         brightness_layout = QHBoxLayout()
         brightness_layout.addWidget(QLabel("흑백 밝기:"))
-        self.brightness_slider = QSlider(Qt.Horizontal)
+        self.brightness_slider = QSlider(Qt.Orientation.Horizontal)
         self.brightness_slider.setMinimum(0)
         self.brightness_slider.setMaximum(100)
         self.brightness_slider.setValue(
@@ -368,7 +368,7 @@ class MainWindow(QMainWindow):
         if self.region_selector is None:
             # 영역 선택기 생성
             overlay_config = config.get("overlay", default={})
-            from PyQt5.QtCore import QRect
+            from PyQt6.QtCore import QRect
 
             initial_rect = QRect(
                 overlay_config.get("x", 100),

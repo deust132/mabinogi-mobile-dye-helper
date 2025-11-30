@@ -1,7 +1,7 @@
 """단축키 관리 모듈"""
 import sys
 from typing import Callable, Dict, Optional
-from PyQt5.QtCore import QObject, pyqtSignal
+from PyQt6.QtCore import QObject, pyqtSignal
 
 if sys.platform == "win32":
     from pynput import keyboard

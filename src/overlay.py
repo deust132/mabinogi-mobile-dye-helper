@@ -4,9 +4,9 @@ import numpy as np
 import cv2
 from typing import Optional, List, Tuple
 
-from PyQt5.QtWidgets import QWidget, QApplication
-from PyQt5.QtCore import Qt, QRect, QPoint, QTimer, pyqtSignal
-from PyQt5.QtGui import (
+from PyQt6.QtWidgets import QWidget, QApplication
+from PyQt6.QtCore import Qt, QRect, QPoint, QTimer, pyqtSignal
+from PyQt6.QtGui import (
     QPainter,
     QPen,
     QColor,
@@ -33,12 +33,12 @@ class OverlayWindow(QWidget):
 
         # 윈도우 설정
         self.setWindowFlags(
-            Qt.FramelessWindowHint
-            | Qt.WindowStaysOnTopHint
-            | Qt.Tool
-            | Qt.WindowTransparentForInput
+            Qt.WindowType.FramelessWindowHint
+            | Qt.WindowType.WindowStaysOnTopHint
+            | Qt.WindowType.Tool
+            | Qt.WindowType.WindowTransparentForInput
         )
-        self.setAttribute(Qt.WA_TranslucentBackground)
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
 
         # 상태 변수
         self.is_running = False
@@ -210,7 +210,7 @@ class OverlayWindow(QWidget):
     def paintEvent(self, event):
         """오버레이 그리기"""
         painter = QPainter(self)
-        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
         # 윈도우 정보 가져오기
         win_info = screen_capture.get_window_info()
@@ -237,7 +237,7 @@ class OverlayWindow(QWidget):
                 w,
                 h,
                 bytes_per_line,
-                QImage.Format_BGR888,
+                QImage.Format.Format_BGR888,
             )
             pixmap = QPixmap.fromImage(q_image)
             painter.drawPixmap(border_rect.topLeft(), pixmap)
@@ -274,7 +274,7 @@ class OverlayWindow(QWidget):
             points.append(QPoint(px, py))
 
         # 삼각형 그리기
-        pen = QPen(QColor(255, 255, 0), 2, Qt.DashLine)
+        pen = QPen(QColor(255, 255, 0), 2, Qt.PenStyle.DashLine)
         painter.setPen(pen)
         painter.setBrush(QBrush(QColor(255, 255, 0, 30)))
 
@@ -294,7 +294,7 @@ class OverlayWindow(QWidget):
 
         # 수직 가이드라인 그리기
         screen_height = QApplication.primaryScreen().geometry().height()
-        pen = QPen(QColor(255, 255, 0, 100), 1, Qt.DotLine)
+        pen = QPen(QColor(255, 255, 0, 100), 1, Qt.PenStyle.DotLine)
         painter.setPen(pen)
 
         for point in points:
@@ -315,9 +315,9 @@ class RegionSelector(QWidget):
         super().__init__(parent)
 
         self.setWindowFlags(
-            Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool
+            Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint | Qt.WindowType.Tool
         )
-        self.setAttribute(Qt.WA_TranslucentBackground)
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
 
         self.region = initial_rect or QRect(100, 100, 400, 300)
         self.dragging = False
@@ -336,7 +336,7 @@ class RegionSelector(QWidget):
     def paintEvent(self, event):
         """영역 테두리 그리기"""
         painter = QPainter(self)
-        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
         # 빨간색 테두리
         pen = QPen(QColor(255, 0, 0), 3)
@@ -364,7 +364,7 @@ class RegionSelector(QWidget):
 
     def mousePressEvent(self, event):
         """마우스 클릭"""
-        if event.button() == Qt.LeftButton:
+        if event.button() == Qt.MouseButton.LeftButton:
             # 크기 조절 핸들 체크
             corner = self._get_corner_at(event.pos())
             if corner:
@@ -374,7 +374,7 @@ class RegionSelector(QWidget):
             elif self.region.contains(event.pos()):
                 self.dragging = True
                 self.drag_start = event.pos() - self.region.topLeft()
-        elif event.button() == Qt.RightButton:
+        elif event.button() == Qt.MouseButton.RightButton:
             # 우클릭: 이동
             if self.region.contains(event.pos()):
                 self.dragging = True
@@ -393,13 +393,13 @@ class RegionSelector(QWidget):
             # 커서 모양 변경
             corner = self._get_corner_at(event.pos())
             if corner in ["tl", "br"]:
-                self.setCursor(Qt.SizeFDiagCursor)
+                self.setCursor(Qt.CursorShape.SizeFDiagCursor)
             elif corner in ["tr", "bl"]:
-                self.setCursor(Qt.SizeBDiagCursor)
+                self.setCursor(Qt.CursorShape.SizeBDiagCursor)
             elif self.region.contains(event.pos()):
-                self.setCursor(Qt.SizeAllCursor)
+                self.setCursor(Qt.CursorShape.SizeAllCursor)
             else:
-                self.setCursor(Qt.ArrowCursor)
+                self.setCursor(Qt.CursorShape.ArrowCursor)
 
     def mouseReleaseEvent(self, event):
         """마우스 릴리즈"""

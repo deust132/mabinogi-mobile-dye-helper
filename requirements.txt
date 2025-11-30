@@ -1,13 +1,11 @@
-# LolotiEE/mmdye와 동일한 버전 (Qt 플러그인 문제 해결)
-PyQt5==5.15.11
-PyQt5-Qt5==5.15.2
-PyQt5_sip==12.17.0
+# Python 3.14 호환 - PyQt6 사용
+PyQt6>=6.5.0
 
 # 추가 의존성
-numpy==2.2.5
-pillow==11.2.1
-pywin32==310
-opencv-python>=4.5.0
+numpy>=2.0.0
+pillow>=10.0.0
+pywin32>=306
+opencv-python>=4.8.0
 pynput>=1.7.6
 
 # 빌드용
