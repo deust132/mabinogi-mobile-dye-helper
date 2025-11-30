@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#CC333333"
+    android:padding="4dp">
+
+    <ImageButton
+        android:id="@+id/btn_capture"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@android:drawable/ic_menu_camera"
+        android:background="#4CAF50"
+        android:contentDescription="캡처"
+        android:layout_marginBottom="4dp"/>
+
+    <ImageButton
+        android:id="@+id/btn_guide"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@android:drawable/ic_menu_view"
+        android:background="#2196F3"
+        android:contentDescription="가이드"
+        android:layout_marginBottom="4dp"/>
+
+    <ImageButton
+        android:id="@+id/btn_close"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        android:background="#F44336"
+        android:contentDescription="닫기"/>
+
+</LinearLayout>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#353535">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="마비노기 염색 도우미"
+        android:textSize="24sp"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="24dp"/>
+
+    <!-- 색상 1 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="12dp">
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="색상 1:"
+            android:textColor="#FFFFFF"
+            android:gravity="center_vertical"/>
+
+        <Button
+            android:id="@+id/btn_color1"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="8dp"/>
+
+        <TextView
+            android:id="@+id/tv_color1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="#515E5B"
+            android:textColor="#AAAAAA"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"/>
+    </LinearLayout>
+
+    <!-- 색상 2 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="12dp">
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="색상 2:"
+            android:textColor="#FFFFFF"
+            android:gravity="center_vertical"/>
+
+        <Button
+            android:id="@+id/btn_color2"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="8dp"/>
+
+        <TextView
+            android:id="@+id/tv_color2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="#7B6655"
+            android:textColor="#AAAAAA"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"/>
+    </LinearLayout>
+
+    <!-- 색상 3 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="24dp">
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="색상 3:"
+            android:textColor="#FFFFFF"
+            android:gravity="center_vertical"/>
+
+        <Button
+            android:id="@+id/btn_color3"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="8dp"/>
+
+        <TextView
+            android:id="@+id/tv_color3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="#E2B174"
+            android:textColor="#AAAAAA"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"/>
+    </LinearLayout>
+
+    <!-- 허용 오차 -->
+    <TextView
+        android:id="@+id/tv_tolerance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="허용 오차: 30"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="8dp"/>
+
+    <SeekBar
+        android:id="@+id/seek_tolerance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:progress="30"
+        android:layout_marginBottom="32dp"/>
+
+    <!-- 버튼들 -->
+    <Button
+        android:id="@+id/btn_start"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="시작"
+        android:textSize="18sp"
+        android:backgroundTint="#4CAF50"
+        android:layout_marginBottom="12dp"/>
+
+    <Button
+        android:id="@+id/btn_stop"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="중지"
+        android:textSize="18sp"
+        android:backgroundTint="#F44336"/>
+
+    <!-- 사용법 -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="사용법:\n1. 색상 버튼을 눌러 찾을 색상 설정\n2. 시작 버튼 클릭\n3. 플로팅 버튼으로 캡처/분석"
+        android:textColor="#888888"
+        android:textSize="12sp"/>
+
+</LinearLayout>
