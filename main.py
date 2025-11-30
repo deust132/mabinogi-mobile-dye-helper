@@ -34,19 +34,19 @@ def check_platform():
 
 
 def check_admin():
-    """관리자 권한 확인"""
+    """관리자 권한 확인 (경고만 표시, 실행은 계속)"""
     if sys.platform == "win32":
         import ctypes
 
         try:
             is_admin = ctypes.windll.shell32.IsUserAnAdmin()
             if not is_admin:
-                print("관리자 권한이 필요합니다.")
-                print("프로그램을 관리자 권한으로 실행해주세요.")
-                # 관리자 권한으로 재실행 시도
-                ctypes.windll.shell32.ShellExecuteW(
-                    None, "runas", sys.executable, " ".join(sys.argv), None, 1
-                )
+                print("=" * 50)
+                print("경고: 관리자 권한 없이 실행 중입니다.")
+                print("일부 기능(단축키 등)이 작동하지 않을 수 있습니다.")
+                print("문제가 있으면 프로그램을 우클릭 후")
+                print("'관리자 권한으로 실행'을 선택하세요.")
+                print("=" * 50)
                 return False
         except Exception:
             pass
@@ -60,9 +60,8 @@ def main():
         input("아무 키나 누르세요...")
         return 1
 
-    # 관리자 권한 확인
-    if not check_admin():
-        return 1
+    # 관리자 권한 확인 (경고만 표시, 계속 실행)
+    check_admin()
 
     # PyQt5 애플리케이션 시작
     from PyQt5.QtWidgets import QApplication
